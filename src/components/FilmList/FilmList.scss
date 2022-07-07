@@ -1,0 +1,12 @@
+ul {
+    padding: 0;
+    margin: 0;
+    li {
+        list-style-type: none;
+    }
+}
+.list-style {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:36px;
+}

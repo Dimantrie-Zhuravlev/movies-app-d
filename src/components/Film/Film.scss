@@ -1,0 +1,35 @@
+.film-container {
+    height:281px;
+    background:gray;
+    display:grid;
+    grid-template-columns:185px 1fr;
+    .img-component {
+        height:100%;
+        background:green;
+    }
+    .desription-component {
+        padding: 12px 9px 0px 20px;
+    }
+    .description-header {
+
+        width:100%;
+        box-sizing:border-box;
+        display:grid;
+        grid-template-columns:1fr 30px;
+        span {
+            box-sizing:border-box;
+            display:inline-block;
+            height:30px;
+            padding-top:6px;
+            text-align:center;
+            border:1px solid yellow;
+            border-radius:50%;
+        }
+        h2 {
+            margin:0;
+            padding:0;
+            font-size:20px;
+            line-height:28px;
+        }
+    }
+}
