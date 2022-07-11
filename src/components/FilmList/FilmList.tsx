@@ -2,14 +2,14 @@ import React from "react";
 
 import "./FilmList.scss";
 import Film from "../Film";
-import { ITodoList } from "../interfaces";
+import { IlistFilm } from "../interfaces";
 
-const FilmList = (props: ITodoList) => {
+const FilmList = (props: IlistFilm) => {
   const elements = props.itemFilms.map((element) => {
     const { id } = element;
     return (
       <li key={id}>
-        <Film></Film>
+        <Film filmInfo={element} InfoAllGenres={props.InfoAllGenres}></Film>
       </li>
     );
   });

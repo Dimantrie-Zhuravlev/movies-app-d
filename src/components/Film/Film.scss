@@ -1,5 +1,7 @@
 .film-container {
     height:281px;
+    width:454px;
+    box-sizing:border-box;
     background:gray;
     display:grid;
     grid-template-columns:185px 1fr;
@@ -11,11 +13,12 @@
         padding: 12px 9px 0px 20px;
     }
     .description-header {
-
         width:100%;
         box-sizing:border-box;
         display:grid;
         grid-template-columns:1fr 30px;
+        gap:10px;
+        white-space:nowrap;
         span {
             box-sizing:border-box;
             display:inline-block;
@@ -26,10 +29,15 @@
             border-radius:50%;
         }
         h2 {
+            overflow:hidden;
             margin:0;
             padding:0;
             font-size:20px;
             line-height:28px;
         }
+    }
+    .description-text {
+        max-height:228px;
+        overflow:hidden;    
     }
 }
