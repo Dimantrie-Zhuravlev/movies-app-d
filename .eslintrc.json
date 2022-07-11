@@ -51,7 +51,7 @@
         "require-jsdoc": "off",
         "prettier/prettier": ["error", { "endOfLine": "auto" }],
         "eol-last":"off",
-        "max-len":["error",125],
+        "max-len":["error",150],
         "@typescript-eslint/ban-ts-comment": "off",//комментарии добавил
         "@typescript-eslint/ban-types": "off", // разрешение использование всех типов
         "prefer-destructuring":"off",

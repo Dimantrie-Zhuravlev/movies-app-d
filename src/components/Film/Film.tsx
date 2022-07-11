@@ -5,8 +5,11 @@ import "./Film.scss";
 
 import { format } from "date-fns";
 import locale from "date-fns/locale/ru";
+import { Typography, Rate, Image } from "antd";
 
 import { IFilmItem, IGenre } from "../interfaces";
+
+const { Text } = Typography;
 
 // import { ITodoItem } from "../interfaces";
 interface Props {
@@ -37,29 +40,45 @@ export default class Film extends Component<Props, State> {
 
   render() {
     const {
-      original_title: name,
+      title: name,
       vote_average: voteAverage,
       release_date: ReleaseDate,
     } = this.props.filmInfo;
-    const res = this.state.genres.map((elem) => elem.name).join(" ");
+    const res = this.state.genres.map((elem) => (
+      <Text key={elem.name} keyboard>
+        {elem.name[0].toUpperCase() + elem.name.slice(1)}
+      </Text>
+    ));
     return (
       <div className="film-container">
-        <div className="img-component">
-          <img />
-        </div>
+        <Image
+          preview={{ visible: false }}
+          width={183}
+          height={278}
+          src={`https://image.tmdb.org/t/p/original/${this.props.filmInfo.poster_path}`}
+        />
         <div className="desription-component">
           <div className="description-header">
             <h2> {name}</h2>
             <span>{voteAverage}</span>
           </div>
-          <p>
-            {format(new Date(ReleaseDate), "PP", {
-              locale,
-            })}
-          </p>
-          <p>{res}</p>
-          {/* <p className="description-text">{this.props.filmInfo.overview}</p> */}
-          {/* <p>{this.state.stars}</p> */}
+          <div className="description-middle">
+            <p>
+              {format(new Date(ReleaseDate), "PP", {
+                locale,
+              })}
+            </p>
+            <p className="description-genres">{res}</p>
+            <p className="description-text">{this.props.filmInfo.overview}</p>
+          </div>
+          <div className="description-stars">
+            <Rate
+              allowHalf
+              defaultValue={3.5}
+              count={10}
+              style={{ fontSize: 16, display: "flex" }}
+            />
+          </div>
         </div>
       </div>
     );

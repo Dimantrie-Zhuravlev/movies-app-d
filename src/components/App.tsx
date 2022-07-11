@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import { Pagination } from "antd";
 import "./App.scss";
 
@@ -17,10 +17,12 @@ export default class App extends Component<Props, ITodoList> {
 
   InfoAllGenres: Array<IGenre> = []; // массив со всем возможными жанрами из запроса
 
-  state: ITodoList = { itemFilms: [], currentPage: 1, totalResults: 0 };
+  totalResults = 0;
+
+  state: ITodoList = { itemFilms: [], currentPage: 1 };
 
   componentDidMount() {
-    this.updateFilm();
+    this.updateFilm(1);
     this.upDateGenres();
   }
 
@@ -30,45 +32,42 @@ export default class App extends Component<Props, ITodoList> {
     });
   };
 
-  updateFilm = () => {
-    this.InfoFilm.getAllInfo().then(
+  updateFilm = (page: number) => {
+    this.InfoFilm.getAllInfo(page).then(
       (body: {
         page: number;
         results: Array<IFilmItem>;
         total_pages: number;
         total_results: number;
       }) => {
-        this.setState({
-          itemFilms: body.results,
-          totalResults: body.total_results,
-        });
+        this.totalResults = body.total_results;
+        this.setState({ itemFilms: body.results });
       }
     );
   };
 
-  onChange = (page: number) => {
-    console.log(page);
+  onChangePagination = (page: number) => {
     this.setState({ currentPage: page });
+    this.updateFilm(page);
   };
 
   render() {
     return (
       <div className="global-container">
         <HeaderSearch />
+        <SearchForm />
         <section>
-          <SearchForm />
           <FilmList
-            itemFilms={this.state.itemFilms.slice(
-              (this.state.currentPage - 1) * 6,
-              this.state.currentPage * 6
-            )}
+            itemFilms={this.state.itemFilms}
             InfoAllGenres={this.InfoAllGenres}
           />
           <Pagination
             current={this.state.currentPage}
-            pageSize={6}
-            total={this.state.totalResults}
-            onChange={this.onChange}
+            pageSize={20}
+            total={this.totalResults}
+            onChange={this.onChangePagination}
+            // hideOnSinglePage={true}
+            showSizeChanger={false}
           />
         </section>
       </div>

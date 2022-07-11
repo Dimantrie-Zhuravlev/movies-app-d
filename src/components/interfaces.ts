@@ -17,7 +17,6 @@ export interface IFilmItem {
 export interface ITodoList {
   itemFilms: Array<IFilmItem>;
   currentPage: number;
-  totalResults: number;
 }
 export type IGenre = { id: number; name: string };
 
