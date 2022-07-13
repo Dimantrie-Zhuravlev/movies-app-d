@@ -11,11 +11,9 @@ export default class SwapiService {
 
   myKey = "9ed0cd92059a9ddc501d095fe44f202b";
 
-  researchItem = "return";
-
-  getAllInfo = (page: number) => {
+  getAllInfo = (page: number, searchWord: string) => {
     return this.getResource(
-      `https://api.themoviedb.org/3/search/movie?api_key=${this.myKey}&query=${this.researchItem}&language=ru-RU&page=${page}`
+      `https://api.themoviedb.org/3/search/movie?api_key=${this.myKey}&query=${searchWord}&language=ru-RU&page=${page}`
     );
   };
 

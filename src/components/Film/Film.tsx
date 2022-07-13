@@ -3,18 +3,20 @@ import React, { Component } from "react";
 
 import "./Film.scss";
 
-import { format } from "date-fns";
-import locale from "date-fns/locale/ru";
-import { Typography, Rate, Image } from "antd";
+import { Rate } from "antd";
 
 import { IFilmItem, IGenre } from "../interfaces";
 
-const { Text } = Typography;
+import FilmPoster from "./FilmComponents/FilmPoster";
+import FilmHeader from "./FilmComponents/FilmHeader";
+import ReleaseDate from "./FilmComponents/ReleaseDate";
+import FilmGenres from "./FilmComponents/FilmGenres";
 
 // import { ITodoItem } from "../interfaces";
 interface Props {
   filmInfo: IFilmItem;
   InfoAllGenres: Array<IGenre>;
+  errorGenre: boolean;
 }
 interface State {
   genres: Array<IGenre>;
@@ -41,40 +43,28 @@ export default class Film extends Component<Props, State> {
   render() {
     const {
       title: name,
-      vote_average: voteAverage,
-      release_date: ReleaseDate,
+      overview,
+      poster_path: addresImage,
+      vote_average: average,
+      release_date: releaseDate,
     } = this.props.filmInfo;
-    const res = this.state.genres.map((elem) => (
-      <Text key={elem.name} keyboard>
-        {elem.name[0].toUpperCase() + elem.name.slice(1)}
-      </Text>
-    ));
     return (
       <div className="film-container">
-        <Image
-          preview={{ visible: false }}
-          width={183}
-          height={278}
-          src={`https://image.tmdb.org/t/p/original/${this.props.filmInfo.poster_path}`}
-        />
+        <FilmPoster addresImage={addresImage} />
         <div className="desription-component">
-          <div className="description-header">
-            <h2> {name}</h2>
-            <span>{voteAverage}</span>
-          </div>
+          <FilmHeader name={name} average={average} />
           <div className="description-middle">
-            <p>
-              {format(new Date(ReleaseDate), "PP", {
-                locale,
-              })}
-            </p>
-            <p className="description-genres">{res}</p>
-            <p className="description-text">{this.props.filmInfo.overview}</p>
+            <ReleaseDate date={releaseDate} />
+            <FilmGenres
+              hasError={this.props.errorGenre}
+              elements={this.state.genres}
+            />
+            <p className="description-text">{overview}</p>
           </div>
           <div className="description-stars">
             <Rate
               allowHalf
-              defaultValue={3.5}
+              defaultValue={0}
               count={10}
               style={{ fontSize: 16, display: "flex" }}
             />

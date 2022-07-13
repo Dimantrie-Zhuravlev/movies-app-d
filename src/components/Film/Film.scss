@@ -1,3 +1,4 @@
+@import "../colors.scss";
 .film-container {
     border:0.5px solid gray;
     height:281px;
@@ -19,20 +20,22 @@
     }
     p {padding:0;}
     .description-header {
-        height:45px;
+        height:50px;
         width:100%;
         box-sizing:border-box;
         display:grid;
         grid-template-columns:1fr 30px;
         gap:10px;
         white-space:nowrap;
-        span {
+        .yellow {border:1px solid yellow;}
+        .green {border:1px solid green;}
+        .red {border:1px solid red;}
+        .average {
             box-sizing:border-box;
             display:inline-block;
             height:30px;
             padding-top:3px;
             text-align:center;
-            border:1px solid yellow;
             border-radius:50%;
         }
         h2 {
@@ -67,7 +70,7 @@
         }
     }
     .description-stars {
-        max-height:32px;
-
+        max-height:24px;
+        overflow:hidden;
     }
 }

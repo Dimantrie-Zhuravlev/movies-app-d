@@ -1,6 +1,6 @@
 import React from "react";
-
 import "./FilmList.scss";
+
 import Film from "../Film";
 import { IlistFilm } from "../interfaces";
 
@@ -9,7 +9,11 @@ const FilmList = (props: IlistFilm) => {
     const { id } = element;
     return (
       <li key={id}>
-        <Film filmInfo={element} InfoAllGenres={props.InfoAllGenres}></Film>
+        <Film
+          filmInfo={element}
+          InfoAllGenres={props.InfoAllGenres}
+          errorGenre={props.errorGenre}
+        ></Film>
       </li>
     );
   });
