@@ -13,6 +13,7 @@ export interface IFilmItem {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  rating?: number;
 }
 export interface ITodoList {
   itemFilms: Array<IFilmItem>;
@@ -22,11 +23,20 @@ export interface ITodoList {
   errorFilm: boolean;
   searchWord: string;
   rated: boolean;
+  ratedFilms: Array<IFilmItem>;
+  ratedId: Array<number>;
 }
 export type IGenre = { id: number; name: string };
 
 export interface IlistFilm {
+  addRatedFilms?: () => void;
   itemFilms: Array<IFilmItem>;
   InfoAllGenres: Array<IGenre>;
   errorGenre: boolean;
+}
+
+export interface ICreateGuestSessin {
+  success: boolean;
+  guest_session_id: string;
+  expires_at: string;
 }

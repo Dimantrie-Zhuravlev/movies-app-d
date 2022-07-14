@@ -15,6 +15,7 @@
         "lodash": "^4.17.21",
         "lodash.debounce": "^4.0.8",
         "react": "^18.2.0",
+        "react-detect-offline": "^2.4.5",
         "react-dom": "^18.2.0",
         "react-scripts": "5.0.1",
         "sass": "^1.53.0",
@@ -51,6 +52,7 @@
     "devDependencies": {
         "@types/lodash": "^4.14.182",
         "@types/lodash.debounce": "^4.0.7",
+        "@types/react-detect-offline": "^2.4.1",
         "@typescript-eslint/eslint-plugin": "^5.30.3",
         "@typescript-eslint/parser": "^5.30.3",
         "babel-eslint": "^10.1.0",

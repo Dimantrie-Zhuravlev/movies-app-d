@@ -27,9 +27,10 @@
         grid-template-columns:1fr 30px;
         gap:10px;
         white-space:nowrap;
-        .yellow {border:1px solid yellow;}
-        .green {border:1px solid green;}
-        .red {border:1px solid red;}
+        .rage-green {border:1px solid #66E900;}
+        .rage-yellow {border:1px solid #E9D100;}
+        .rage-orange {border:1px solid #E97E00;}
+        .rage-red {border:1px solid #E90000;}
         .average {
             box-sizing:border-box;
             display:inline-block;

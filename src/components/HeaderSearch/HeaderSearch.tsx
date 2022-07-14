@@ -7,16 +7,24 @@ const { TabPane } = Tabs;
 //   console.log(key);
 // };
 
-const HeaderSearch = () => {
+const HeaderSearch = (props: { updatePage: (rated: boolean) => void }) => {
+  const onChange = (key: string) => {
+    if (key === "Search") {
+      props.updatePage(false);
+    } else {
+      props.updatePage(true);
+    }
+  };
   return (
     <Tabs
       defaultActiveKey="1"
       // onChange={onChange}
       centered={true}
       tabBarGutter={20}
+      onChange={onChange}
     >
-      <TabPane tab="Search" key="1"></TabPane>
-      <TabPane tab="Rated" key="2"></TabPane>
+      <TabPane tab="Search" key="Search"></TabPane>
+      <TabPane tab="Rated" key="Rated"></TabPane>
     </Tabs>
   );
 };

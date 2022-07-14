@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Pagination, Space, Spin, Button } from "antd";
 import "./App.scss";
+import { Offline, Online } from "react-detect-offline";
 
 import FilmInfo from "../services";
 
@@ -8,7 +9,7 @@ import HeaderSearch from "./HeaderSearch";
 import SearchForm from "./SearchForm";
 import FilmList from "./FilmList";
 // import AppPagination from "./Pagination/Pagination";
-import { IFilmItem, ITodoList, IGenre } from "./interfaces";
+import { IFilmItem, ITodoList, IGenre, ICreateGuestSessin } from "./interfaces";
 
 type Props = {};
 
@@ -19,6 +20,8 @@ export default class App extends Component<Props, ITodoList> {
 
   totalResults = 0;
 
+  guestSessionId = "";
+
   state: ITodoList = {
     itemFilms: [],
     currentPage: 1,
@@ -27,11 +30,14 @@ export default class App extends Component<Props, ITodoList> {
     errorFilm: false,
     searchWord: "return",
     rated: false,
+    ratedFilms: [],
+    ratedId: [],
   };
 
   componentDidMount() {
     this.updateFilm(1, "return");
     this.upDateGenres();
+    this.updateGuestId();
   }
 
   upDateGenres = () => {
@@ -43,6 +49,25 @@ export default class App extends Component<Props, ITodoList> {
         console.log(err);
         this.setState({ errorGenre: true });
       });
+  };
+
+  updateGuestId = () => {
+    this.InfoFilm.createGuestSession().then((body: ICreateGuestSessin) => {
+      this.guestSessionId = body.guest_session_id;
+    });
+  };
+
+  getRateMovie = () => {
+    this.InfoFilm.getRatedMovies(this.guestSessionId).then(
+      (body: {
+        page: number;
+        results: Array<IFilmItem>;
+        total_pages: number;
+        total_results: number;
+      }) => {
+        this.setState({ ratedFilms: body.results });
+      }
+    );
   };
 
   updateFilm = (page: number, searchWord: string) => {
@@ -63,6 +88,13 @@ export default class App extends Component<Props, ITodoList> {
       });
   };
 
+  updateRated = (ratedNew: boolean) => {
+    this.getRateMovie();
+    this.setState({
+      rated: ratedNew,
+    });
+  };
+
   updateSearchWord = (word: string) => {
     this.setState({ searchWord: word, loading: true });
     this.updateFilm(1, word);
@@ -73,47 +105,97 @@ export default class App extends Component<Props, ITodoList> {
     this.updateFilm(page, this.state.searchWord);
   };
 
-  render() {
-    const MainElemRender = () => {
-      if (this.state.itemFilms === [])
-        return <Button type="primary">Фильмов нету</Button>;
-      if (this.state.errorFilm)
-        return <Button type="primary">Fetch burning</Button>;
-
-      return (
-        <React.Fragment>
-          <FilmList
-            itemFilms={this.state.itemFilms}
-            InfoAllGenres={this.InfoAllGenres}
-            errorGenre={this.state.errorGenre}
-          />
-          <Pagination
-            current={this.state.currentPage}
-            pageSize={20}
-            total={this.totalResults}
-            onChange={this.onChangePagination}
-            // hideOnSinglePage={true}
-            showSizeChanger={false}
-          />
-        </React.Fragment>
-      );
-    };
-    const InsertLoadingOr = () =>
-      this.state.loading ? (
-        <Space size="large">
-          <Spin size="large" />
-        </Space>
-      ) : (
-        <MainElemRender />
-      );
-    return (
-      <div className="global-container">
-        <HeaderSearch />
-        <SearchForm updateSearchWord={this.updateSearchWord} />
-        <section>
-          <InsertLoadingOr />
-        </section>
-      </div>
+  addRatedFilms = (movieId: number, rate: number) => {
+    this.InfoFilm.postRatedStars(this.guestSessionId, movieId, rate).then(
+      (body: { status_code: number; status_message: string }) => {
+        console.log("пост прошел", body.status_code);
+      }
     );
+  };
+
+  render() {
+    const ErrorRender = this.state.errorFilm ? (
+      <Button type="primary">Fetch burning</Button>
+    ) : null;
+    //
+    const LoadingRender = this.state.loading ? (
+      <Space size="large">
+        <Spin size="large" />
+      </Space>
+    ) : null;
+    //
+    const MainListFilms = !this.state.rated ? (
+      <React.Fragment>
+        <FilmList
+          addRatedFilms={this.addRatedFilms}
+          itemFilms={this.state.itemFilms}
+          InfoAllGenres={this.InfoAllGenres}
+          errorGenre={this.state.errorGenre}
+        />
+        <Pagination
+          current={this.state.currentPage}
+          pageSize={20}
+          total={this.totalResults}
+          onChange={this.onChangePagination}
+          showSizeChanger={false}
+        />
+      </React.Fragment>
+    ) : (
+      <React.Fragment>
+        <FilmList
+          itemFilms={this.state.ratedFilms}
+          InfoAllGenres={this.InfoAllGenres}
+          errorGenre={this.state.errorGenre}
+        />
+      </React.Fragment>
+    );
+    const ZeroOrFullFilms =
+      !this.state.itemFilms.length &&
+      !this.state.loading &&
+      !this.state.errorFilm ? (
+        <Button type="primary">Фильмов по запросу нету</Button>
+      ) : (
+        MainListFilms
+      );
+    //
+    const SearchPage = (
+      <React.Fragment>
+        <Online>
+          <div className="global-container">
+            <HeaderSearch updatePage={this.updateRated} />
+            <SearchForm updateSearchWord={this.updateSearchWord} />
+            {ErrorRender}
+            {LoadingRender}
+            <section>{ZeroOrFullFilms}</section>
+          </div>
+        </Online>
+        <Offline>
+          <div className="offline-container">
+            <Button type="primary">У вас совсем нету интернета</Button>
+          </div>
+        </Offline>
+      </React.Fragment>
+    );
+    const SearchOrRate = !this.state.rated ? (
+      SearchPage
+    ) : (
+      <React.Fragment>
+        <Online>
+          <div className="global-container">
+            <HeaderSearch updatePage={this.updateRated} />
+            {ErrorRender}
+            {LoadingRender}
+            <section>{ZeroOrFullFilms}</section>
+            <div>МЫ НА ВКЛАДКЕ RATED</div>
+          </div>
+        </Online>
+        <Offline>
+          <div className="offline-container">
+            <Button type="primary">У вас совсем нету интернета</Button>
+          </div>
+        </Offline>
+      </React.Fragment>
+    );
+    return SearchOrRate;
   }
 }

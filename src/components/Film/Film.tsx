@@ -17,9 +17,12 @@ interface Props {
   filmInfo: IFilmItem;
   InfoAllGenres: Array<IGenre>;
   errorGenre: boolean;
+  addRatedFilms?: (movieId: number, rate: number) => void;
 }
+
 interface State {
   genres: Array<IGenre>;
+  starsValue: number;
 }
 
 export default class Film extends Component<Props, State> {
@@ -27,7 +30,7 @@ export default class Film extends Component<Props, State> {
     this.updateGenre();
   }
 
-  state: State = { genres: [] };
+  state: State = { genres: [], starsValue: 0 };
 
   updateGenre = () => {
     const arr: Array<IGenre> = [];
@@ -40,14 +43,20 @@ export default class Film extends Component<Props, State> {
     this.setState({ genres: arr });
   };
 
+  updateStars = (value: number) => {
+    this.setState({ starsValue: value });
+  };
+
   render() {
     const {
+      id,
       title: name,
       overview,
       poster_path: addresImage,
       vote_average: average,
       release_date: releaseDate,
     } = this.props.filmInfo;
+    const rated = !this.props.filmInfo.rating ? this.props.filmInfo.rating : 0;
     return (
       <div className="film-container">
         <FilmPoster addresImage={addresImage} />
@@ -64,9 +73,15 @@ export default class Film extends Component<Props, State> {
           <div className="description-stars">
             <Rate
               allowHalf
-              defaultValue={0}
+              defaultValue={rated}
               count={10}
               style={{ fontSize: 16, display: "flex" }}
+              value={this.state.starsValue}
+              onChange={(value) => {
+                this.setState({ starsValue: value });
+                if (this.props.addRatedFilms)
+                  this.props.addRatedFilms(id, value);
+              }}
             />
           </div>
         </div>

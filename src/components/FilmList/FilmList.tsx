@@ -10,6 +10,7 @@ const FilmList = (props: IlistFilm) => {
     return (
       <li key={id}>
         <Film
+          addRatedFilms={props.addRatedFilms}
           filmInfo={element}
           InfoAllGenres={props.InfoAllGenres}
           errorGenre={props.errorGenre}
