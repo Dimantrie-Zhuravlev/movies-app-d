@@ -19,7 +19,7 @@ export default class SwapiService {
 
   getGenre = () => {
     return this.getResource(
-      `https://api.themoviedb.org/3/genre/movie/list?api_key=${this.myKey}&language=ru`
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=${this.myKey}&language=ru-RU`
     );
   };
 
@@ -35,8 +35,23 @@ export default class SwapiService {
     );
   };
 
+  async postResource(
+    url: string,
+    option: {
+      method: string;
+      headers: { "Content-Type": string };
+      body: string;
+    }
+  ) {
+    const res = await fetch(url, option);
+    if (!res.ok) {
+      throw new Error(`Could nor fetch ${url} `);
+    }
+    return res.json();
+  }
+
   postRatedStars = (guestId: string, movieId: number, rated: number) => {
-    return fetch(
+    return this.postResource(
       `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${this.myKey}&guest_session_id=${guestId}`,
       {
         method: "POST",

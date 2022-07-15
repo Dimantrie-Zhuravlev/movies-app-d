@@ -4,6 +4,7 @@ import "./App.scss";
 import { Offline, Online } from "react-detect-offline";
 
 import FilmInfo from "../services";
+// import { ProviderAllGenres } from "../context";
 
 import HeaderSearch from "./HeaderSearch";
 import SearchForm from "./SearchForm";
@@ -19,6 +20,8 @@ export default class App extends Component<Props, ITodoList> {
   InfoAllGenres: Array<IGenre> = []; // массив со всем возможными жанрами из запроса
 
   totalResults = 0;
+
+  elementRef = React.createRef();
 
   guestSessionId = "";
 
@@ -39,6 +42,24 @@ export default class App extends Component<Props, ITodoList> {
     this.upDateGenres();
     this.updateGuestId();
   }
+
+  updateFilm = (page: number, searchWord: string) => {
+    this.InfoFilm.getAllInfo(page, searchWord)
+      .then(
+        (body: {
+          page: number;
+          results: Array<IFilmItem>;
+          total_pages: number;
+          total_results: number;
+        }) => {
+          this.totalResults = body.total_results;
+          this.setState({ itemFilms: body.results, loading: false });
+        }
+      )
+      .catch(() => {
+        this.setState({ errorFilm: true, loading: false });
+      });
+  };
 
   upDateGenres = () => {
     this.InfoFilm.getGenre()
@@ -65,34 +86,24 @@ export default class App extends Component<Props, ITodoList> {
         total_pages: number;
         total_results: number;
       }) => {
-        this.setState({ ratedFilms: body.results });
+        this.setState({ ratedFilms: body.results, loading: false });
       }
     );
   };
 
-  updateFilm = (page: number, searchWord: string) => {
-    this.InfoFilm.getAllInfo(page, searchWord)
-      .then(
-        (body: {
-          page: number;
-          results: Array<IFilmItem>;
-          total_pages: number;
-          total_results: number;
-        }) => {
-          this.totalResults = body.total_results;
-          this.setState({ itemFilms: body.results, loading: false });
-        }
-      )
-      .catch(() => {
-        this.setState({ errorFilm: true, loading: false });
-      });
-  };
-
   updateRated = (ratedNew: boolean) => {
-    this.getRateMovie();
+    if (ratedNew === true) this.getRateMovie();
     this.setState({
       rated: ratedNew,
     });
+    if (ratedNew === false)
+      this.setState({
+        loading: false,
+      });
+  };
+
+  addRatedFilms = (movieId: number, rate: number) => {
+    this.InfoFilm.postRatedStars(this.guestSessionId, movieId, rate);
   };
 
   updateSearchWord = (word: string) => {
@@ -103,14 +114,6 @@ export default class App extends Component<Props, ITodoList> {
   onChangePagination = (page: number) => {
     this.setState({ currentPage: page, loading: true });
     this.updateFilm(page, this.state.searchWord);
-  };
-
-  addRatedFilms = (movieId: number, rate: number) => {
-    this.InfoFilm.postRatedStars(this.guestSessionId, movieId, rate).then(
-      (body: { status_code: number; status_message: string }) => {
-        console.log("пост прошел", body.status_code);
-      }
-    );
   };
 
   render() {
@@ -126,12 +129,14 @@ export default class App extends Component<Props, ITodoList> {
     //
     const MainListFilms = !this.state.rated ? (
       <React.Fragment>
+        {/* <ProviderAllGenres value={this.InfoAllGenres}> */}
         <FilmList
           addRatedFilms={this.addRatedFilms}
           itemFilms={this.state.itemFilms}
           InfoAllGenres={this.InfoAllGenres}
           errorGenre={this.state.errorGenre}
         />
+        {/* </ProviderAllGenres> */}
         <Pagination
           current={this.state.currentPage}
           pageSize={20}
@@ -142,11 +147,13 @@ export default class App extends Component<Props, ITodoList> {
       </React.Fragment>
     ) : (
       <React.Fragment>
+        {/* <ProviderAllGenres value={this.InfoAllGenres}> */}
         <FilmList
           itemFilms={this.state.ratedFilms}
           InfoAllGenres={this.InfoAllGenres}
           errorGenre={this.state.errorGenre}
         />
+        {/* </ProviderAllGenres> */}
       </React.Fragment>
     );
     const ZeroOrFullFilms =
@@ -182,11 +189,10 @@ export default class App extends Component<Props, ITodoList> {
       <React.Fragment>
         <Online>
           <div className="global-container">
-            <HeaderSearch updatePage={this.updateRated} />
+            <HeaderSearch updatePage={this.updateRated} ref={this.elementRef} />
             {ErrorRender}
             {LoadingRender}
             <section>{ZeroOrFullFilms}</section>
-            <div>МЫ НА ВКЛАДКЕ RATED</div>
           </div>
         </Online>
         <Offline>

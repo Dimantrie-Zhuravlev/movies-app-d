@@ -6,6 +6,7 @@ import "./Film.scss";
 import { Rate } from "antd";
 
 import { IFilmItem, IGenre } from "../interfaces";
+// import { ConsumerAllGenres } from "./../../context";
 
 import FilmPoster from "./FilmComponents/FilmPoster";
 import FilmHeader from "./FilmComponents/FilmHeader";
@@ -64,10 +65,12 @@ export default class Film extends Component<Props, State> {
           <FilmHeader name={name} average={average} />
           <div className="description-middle">
             <ReleaseDate date={releaseDate} />
+            {/* <ConsumerAllGenres>  */}
             <FilmGenres
               hasError={this.props.errorGenre}
               elements={this.state.genres}
             />
+            {/* // { </ConsumerAllGenres> } */}
             <p className="description-text">{overview}</p>
           </div>
           <div className="description-stars">
