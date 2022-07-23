@@ -1,2 +1,3 @@
-# http://movies-app-neo6nks7u-dimantrie-zhuravlev.vercel.app
-Не знаю почему пагинация так отображается, поправлю 
+# http://movies-app-ii2vnur1a-dimantrie-zhuravlev.vercel.app
+Пагинацию так и не знаю как поправить
+Плюс еще по-хорошему надо сделать промотку при клике по пагинации наверх, тож не знаю как
