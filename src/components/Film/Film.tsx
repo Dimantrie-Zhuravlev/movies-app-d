@@ -57,7 +57,9 @@ export default class Film extends Component<Props, State> {
       vote_average: average,
       release_date: releaseDate,
     } = this.props.filmInfo;
-    const rated = !this.props.filmInfo.rating ? this.props.filmInfo.rating : 0;
+    const rated = this.props.filmInfo.rating
+      ? this.props.filmInfo.rating
+      : this.state.starsValue;
     return (
       <div className="film-container">
         <FilmPoster addresImage={addresImage} />
@@ -76,12 +78,13 @@ export default class Film extends Component<Props, State> {
           <div className="description-stars">
             <Rate
               allowHalf
-              defaultValue={rated}
+              // defaultValue={rated}
               count={10}
               style={{ fontSize: 16, display: "flex" }}
-              value={this.state.starsValue}
+              value={rated}
               onChange={(value) => {
-                this.setState({ starsValue: value });
+                console.log(this.props.filmInfo.rating);
+                this.updateStars(value);
                 if (this.props.addRatedFilms)
                   this.props.addRatedFilms(id, value);
               }}
