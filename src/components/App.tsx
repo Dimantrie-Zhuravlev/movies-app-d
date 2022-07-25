@@ -137,13 +137,15 @@ export default class App extends Component<Props, ITodoList> {
           errorGenre={this.state.errorGenre}
         />
         {/* </ProviderAllGenres> */}
-        <Pagination
-          current={this.state.currentPage}
-          pageSize={20}
-          total={this.totalResults}
-          onChange={this.onChangePagination}
-          showSizeChanger={false}
-        />
+        <div className="pagination">
+          <Pagination
+            current={this.state.currentPage}
+            pageSize={20}
+            total={this.totalResults}
+            onChange={this.onChangePagination}
+            showSizeChanger={false}
+          />
+        </div>
       </React.Fragment>
     ) : (
       <React.Fragment>
